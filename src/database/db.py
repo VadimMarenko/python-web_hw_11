@@ -1,8 +1,8 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
 import configparser
 import pathlib
+
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
 
 file_config = pathlib.Path(__file__).parent.parent.joinpath("conf/config.ini")
@@ -15,8 +15,7 @@ database_name = config.get("DB", "DB_NAME")
 domain = config.get("DB", "DOMAIN")
 port = config.get("DB", "PORT")
 
-url = f"postgresql://{username}:{password}@{domain}:{port}/{database_name}"
-Base = declarative_base()
+url = f"postgresql+psycopg2://{username}:{password}@{domain}:{port}/{database_name}"
 engine = create_engine(url, echo=False, pool_size=5)
 
 DBSession = sessionmaker(bind=engine, autocommit=False, autoflush=False)
