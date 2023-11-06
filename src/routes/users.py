@@ -17,7 +17,7 @@ async def get_users(db: Session = Depends(get_db)):
 
 
 @router.get("/{user_id}", response_model=ResponseUser)
-async def get_user(user_id: int = Path(1, ge=1), db: Session = Depends(get_db)):
+async def get_user(user_id: int = Path(ge=1), db: Session = Depends(get_db)):
     user = await repository_users.get_user(user_id, db)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
@@ -32,7 +32,7 @@ async def create_owner(body: UserModel, db: Session = Depends(get_db)):
 
 @router.put("/{user_id}", response_model=ResponseUser)
 async def update_user(
-    body: UserModel, user_id: int = Path(1, ge=1), db: Session = Depends(get_db)
+    body: UserModel, user_id: int = Path(ge=1), db: Session = Depends(get_db)
 ):
     user = await repository_users.update_user(body, user_id, db)
     if user is None:
@@ -41,7 +41,7 @@ async def update_user(
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def remove_user(user_id: int = Path(1, ge=1), db: Session = Depends(get_db)):
+async def remove_user(user_id: int = Path(ge=1), db: Session = Depends(get_db)):
     user = await repository_users.remove_user(user_id, db)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
