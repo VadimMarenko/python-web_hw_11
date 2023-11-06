@@ -14,4 +14,5 @@ class Users(Base):
     phone_number = Column(String(25), nullable=False)
     born_date = Column(Date, nullable=False)
     description = Column(String(250))
-    created_at = Column("created_at", DateTime, default=func.now())
+    created_at = Column(DateTime, default=func.now())
+    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
