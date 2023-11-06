@@ -25,7 +25,7 @@ async def get_user(user_id: int = Path(ge=1), db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=ResponseUser, status_code=status.HTTP_201_CREATED)
-async def create_owner(body: UserModel, db: Session = Depends(get_db)):
+async def create_user(body: UserModel, db: Session = Depends(get_db)):
     user = await repository_users.create_user(body, db)
     return user
 
