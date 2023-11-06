@@ -5,17 +5,14 @@ from sqlalchemy.orm import Session
 
 from src.database.db import get_db
 from src.schemas import ResponseUser, UserModel
-from src.repository import owners as repository_owners
+from src.repository import users as repository_users
 
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.get(
-    "/",
-    response_model=List[ResponseUser],
-)
-async def get_owners(db: Session = Depends(get_db)):
-    users = await repository_owners.get_users(db)
+@router.get("/", response_model=List[ResponseUser])
+async def get_users(db: Session = Depends(get_db)):
+    users = await repository_users.get_users(db)
     return users
 
 
@@ -33,9 +30,9 @@ async def create_owner(body: UserModel, db: Session = Depends(get_db)):
     return user
 
 
-@router.put("/{owner_id}", response_model=ResponseUser)
-async def update_owner(
-    body: UserModel, owner_id: int = Path(1, ge=1), db: Session = Depends(get_db)
+@router.put("/{user_id}", response_model=ResponseUser)
+async def update_user(
+    body: UserModel, user_id: int = Path(1, ge=1), db: Session = Depends(get_db)
 ):
     user = await repository_users.update_user(body, user_id, db)
     if user is None:
@@ -44,7 +41,7 @@ async def update_owner(
 
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def remove_owner(user_id: int = Path(1, ge=1), db: Session = Depends(get_db)):
+async def remove_user(user_id: int = Path(1, ge=1), db: Session = Depends(get_db)):
     user = await repository_users.remove_user(user_id, db)
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Not Found")
