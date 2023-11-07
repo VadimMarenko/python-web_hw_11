@@ -4,12 +4,12 @@ from pydantic import BaseModel, EmailStr, Field
 
 
 class UserModel(BaseModel):
-    first_name: str = Field("Bill")
-    last_name: str = Field("Jhonson")
-    email: EmailStr = Field("user@example.com")
-    phone_number: str = Field("+380 99 99 99 999")
-    born_date: date = date(2000, 1, 1)
-    description: str = Field("Customer")
+    first_name: str = Field(max_length=25)
+    last_name: str = Field(max_length=30)
+    email: EmailStr
+    phone_number: str = Field(max_length=25)
+    born_date: date
+    description: str = Field(max_length=250)
 
 
 class ResponseUser(BaseModel):
@@ -19,7 +19,11 @@ class ResponseUser(BaseModel):
     email: EmailStr
     phone_number: str
     born_date: date
-    description: str
+    description: str | None = None
 
     class Config:
         orm_mode = True
+
+
+class UserEmailModel(BaseModel):
+    email: EmailStr
