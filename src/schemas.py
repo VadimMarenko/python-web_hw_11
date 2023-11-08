@@ -1,6 +1,6 @@
 from datetime import date
 
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, EmailStr, Field, condate
 
 
 class UserModel(BaseModel):
@@ -8,7 +8,7 @@ class UserModel(BaseModel):
     last_name: str = Field(default="", max_length=30)
     email: EmailStr | None
     phone_number: str = Field(default="", max_length=25)
-    born_date: date | None = None
+    born_date: date | None
     description: str = Field(default="", max_length=250)
 
 
