@@ -1,14 +1,12 @@
 from typing import List
-from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException, status, Path, Query
 from sqlalchemy.orm import Session
-from sqlalchemy import text
 
 from src.database.db import get_db
 from src.schemas import ResponseUser, UserModel, UserEmailModel
 from src.repository import users as repository_users
-from src.database.models import Users
+
 
 router = APIRouter(prefix="/users", tags=["users"])
 
