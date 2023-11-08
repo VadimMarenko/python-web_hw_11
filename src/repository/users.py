@@ -1,4 +1,7 @@
+from datetime import datetime, timedelta
+
 from sqlalchemy.orm import Session
+from sqlalchemy import or_, and_, func
 
 from src.database.models import Users
 from src.schemas import UserModel, UserEmailModel
@@ -11,21 +14,6 @@ async def get_users(db: Session):
 
 async def get_user(user_id: int, db: Session):
     user = db.query(Users).filter_by(id=user_id).first()
-    return user
-
-
-async def get_user_by_name(user_name: str, db: Session):
-    users = db.query(Users).filter_by(first_name=user_name).all()
-    return users
-
-
-async def get_user_by_surname(user_surname: str, db: Session):
-    users = db.query(Users).filter_by(last_name=user_surname).all()
-    return users
-
-
-async def get_user_by_email(user_email: str, db: Session):
-    user = db.query(Users).filter_by(email=user_email).first()
     return user
 
 
@@ -64,3 +52,35 @@ async def remove_user(user_id: int, db: Session):
         db.delete(user)
         db.commit()
     return user
+
+
+async def search_user(db: Session, q: str, skip: int, limit: int):
+    query = db.query(Users)
+    if q:
+        query = query.filter(
+            or_(
+                Users.first_name.ilike(f"%{q}%"),
+                Users.last_name.ilike(f"%{q}%"),
+                Users.email.ilike(f"%{q}%"),
+            )
+        )
+    users = query.offset(skip).limit(limit)
+    return users
+
+
+async def birthdays_per_week(db: Session, days: int, skip: int, limit: int):
+    today = datetime.now().date()
+    date_to = today + timedelta(days=days)
+
+    upcoming_birthdays_filter = (
+        func.to_char(Users.born_date, "MM-DD") >= today.strftime("%m-%d")
+    ) & (func.to_char(Users.born_date, "MM-DD") <= date_to.strftime("%m-%d"))
+
+    birthday_users = (
+        db.query(Users)
+        .filter(upcoming_birthdays_filter)
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+    return birthday_users
